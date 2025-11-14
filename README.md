@@ -1,5 +1,39 @@
 This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
+## Haiseven Frontend Auth
+
+This app integrates with Haiseven API (Laravel Sanctum) using bearer tokens.
+
+### Environment
+
+Set the API base URL (development default is `http://localhost:8000`):
+
+```bash
+# fish shell
+set -Ux NEXT_PUBLIC_API_URL http://localhost:8000
+```
+
+### Routes
+
+- `/register` – user registration
+- `/login` – user login
+- `/dashboard` – protected profile overview
+- `/focus` – Daily Focus (dynamic cards, history)
+- `/gratitude` – Gratitude Jar (textarea + list)
+- `/morning-page` – Morning Page (3-minute brain dump with idle blur)
+- `/affirmation` – Positive Fortune Cookie (random colorful affirmation grid)
+- `/brain-warmup` – Fast math multiple-choice game (streak bonus + sounds + leaderboard)
+- `/muse` – Morning Muse creative prompt generator (random ideation spark)
+
+Global auth state is managed with Zustand (`app/store/auth.ts`). The `useAuth` hook (`app/hooks/useAuth.ts`) provides `login`, `register`, `logout`, and `getUser`.
+
+Notes:
+- Morning Page implements a 3-minute timer and blurs text after 5 seconds idle to discourage editing.
+- Navigation is responsive with a mobile hamburger menu (`app/components/Header.tsx`).
+- Affirmation uses a gradient shuffle grid after you fetch the first quote.
+- Brain Warm-up provides safe division & multiplication, streak visual bonus, optional sounds, and stores scores (global + personal top via backend).
+- Morning Muse fetches a random creative prompt from backend (`GET /api/muse/random`).
+
 ## Getting Started
 
 First, run the development server:

@@ -1,15 +1,18 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Inter, Space_Grotesk } from "next/font/google";
+import { Header } from "./components/Header";
 import "./globals.css";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
+const inter = Inter({
+  variable: "--font-inter",
   subsets: ["latin"],
+  display: "swap",
 });
 
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
+const grotesk = Space_Grotesk({
+  variable: "--font-grotesk",
   subsets: ["latin"],
+  display: "swap",
 });
 
 export const metadata: Metadata = {
@@ -24,10 +27,17 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-      >
-        {children}
+  <body className={`${inter.variable} ${grotesk.variable} antialiased`}>
+        <Header />
+        <main className="mx-auto max-w-5xl px-4 py-6 sm:py-10">
+          {children}
+        </main>
+        <footer className="mt-12 border-t border-[var(--border)] bg-transparent">
+          <div className="mx-auto max-w-5xl px-4 py-6 text-sm flex items-center justify-between">
+            <span>© {new Date().getFullYear()} haiseven</span>
+            <span className="text-gray-500">Web3 gradient minimalism</span>
+          </div>
+        </footer>
       </body>
     </html>
   );

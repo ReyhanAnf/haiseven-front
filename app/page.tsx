@@ -1,65 +1,169 @@
-import Image from "next/image";
+import { BrainCircuit, CheckCircle, Edit, GitBranch, HandHeart, Sparkles, Trash2, Wind } from 'lucide-react';
+import Link from 'next/link';
 
-export default function Home() {
+// Main component for the Static Landing Page
+export default function LandingPage() {
   return (
-    <div className="flex min-h-screen items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex min-h-screen w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
-        </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
-        </div>
+    <div className="bg-white text-slate-800 font-sans">
+      <GradientBg />
+      <main>
+        <HeroSection />
+        <FeaturesSection />
+        <CtaSection />
       </main>
+      <Footer />
     </div>
   );
 }
+
+// Background decorative gradient
+const GradientBg = () => (
+  <div
+    aria-hidden="true"
+    className="absolute inset-0 -z-10 overflow-hidden"
+  >
+    <div className="absolute left-[max(50%,25rem)] top-0 h-[64rem] w-[128rem] -translate-x-1/2 rounded-full bg-gradient-to-tr from-blue-50 via-white to-cyan-50 blur-3xl" />
+  </div>
+);
+
+// Hero Section with headline, tagline, and CTA
+const HeroSection = () => (
+  <section className="relative mx-auto max-w-7xl px-4 pt-20 sm:px-6 lg:px-8 lg:pt-32">
+    <div className="mx-auto max-w-2xl text-center">
+      <h1 className="text-5xl font-extrabold tracking-tighter text-slate-900 sm:text-7xl">
+        haiseven
+      </h1>
+      <p className="mt-6 text-lg leading-8 text-slate-600">
+        Sapaan digital untuk membantumu memulai hari dengan sengaja.
+      </p>
+      <div className="mt-10 flex items-center justify-center gap-x-6">
+        <Link href="/register" className="rounded-lg bg-gradient-to-r from-blue-500 to-cyan-400 px-5 py-3 text-base font-semibold text-white shadow-sm transition hover:opacity-90">
+          Mulai Ritual Pagi Anda
+        </Link>
+      </div>
+    </div>
+    <HeroIllustration />
+  </section>
+);
+
+// Abstract SVG illustration for the hero section
+const HeroIllustration = () => (
+  <div className="absolute inset-0 -z-10 mt-48 opacity-20 sm:opacity-30">
+    <svg className="mx-auto h-full w-full" viewBox="0 0 1024 576">
+      <defs>
+        <linearGradient id="grad1" x1="0%" y1="0%" x2="100%" y2="0%">
+          <stop offset="0%" style={{ stopColor: '#8B5CF6', stopOpacity: 1 }} />
+          <stop offset="100%" style={{ stopColor: '#EC4899', stopOpacity: 1 }} />
+        </linearGradient>
+      </defs>
+      <path
+        d="M 100,100 C 200,200 400,50 500,150 S 700,300 900,200"
+        stroke="url(#grad1)"
+        fill="none"
+        strokeWidth="2"
+        strokeLinecap="round"
+      />
+      <path
+        d="M 50,300 C 150,400 350,250 450,350 S 650,500 850,400"
+        stroke="url(#grad1)"
+        fill="none"
+        strokeWidth="2"
+        strokeLinecap="round"
+        strokeDasharray="4 8"
+      />
+    </svg>
+  </div>
+);
+
+// Features Section with minimalist cards
+const features = [
+  {
+    name: 'Daily Focus',
+    description: 'Tentukan 3 prioritas utamamu untuk hari ini.',
+    icon: CheckCircle,
+  },
+  {
+    name: 'Gratitude Jar',
+    description: 'Catat hal-hal kecil yang kamu syukuri.',
+    icon: HandHeart,
+  },
+  {
+    name: 'Morning Page',
+    description: 'Tuangkan isi kepala tanpa filter selama 3 menit.',
+    icon: Wind,
+  },
+  {
+    name: 'Positive Affirmation',
+    description: 'Dapatkan kutipan positif acak untuk semangat.',
+    icon: Sparkles,
+  },
+  {
+    name: 'Brain Warm-up',
+    description: 'Latih kognitif dengan game matematika cepat.',
+    icon: BrainCircuit,
+  },
+  {
+    name: 'Mental Unload',
+    description: 'Buang pikiran negatif yang akan lenyap selamanya.',
+    icon: Trash2,
+  },
+  {
+    name: 'Decision Maker',
+    description: 'Bandingkan pro dan kontra untuk keputusan penting.',
+    icon: GitBranch,
+  },
+  {
+    name: 'Morning Muse',
+    description: 'Dapatkan ide kreatif untuk memulai tulisan atau harimu.',
+    icon: Edit,
+  },
+];
+
+const FeaturesSection = () => (
+  <section className="mx-auto max-w-7xl px-4 py-24 sm:px-6 sm:py-32 lg:px-8">
+    <div className="mx-auto max-w-2xl text-center">
+      <h2 className="text-3xl font-bold tracking-tight text-slate-900 sm:text-4xl">
+        Perangkat Digital Ringan untuk Hari Anda.
+      </h2>
+      <p className="mt-4 text-lg text-slate-600">
+        Setiap alat dirancang untuk fungsional, cepat, dan menenangkan.
+      </p>
+    </div>
+    <div className="mt-16 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
+      {features.map((feature) => (
+        <div key={feature.name} className="rounded-xl border border-slate-200/70 bg-white p-6 shadow-sm transition hover:border-slate-300 hover:shadow-md">
+          <feature.icon className="h-8 w-8 text-blue-500" strokeWidth={1.5} />
+          <h3 className="mt-4 font-semibold text-slate-900">{feature.name}</h3>
+          <p className="mt-1 text-sm text-slate-600">{feature.description}</p>
+        </div>
+      ))}
+    </div>
+  </section>
+);
+
+// Final Call-to-Action Section
+const CtaSection = () => (
+  <section className="bg-slate-50/70">
+    <div className="mx-auto max-w-7xl px-4 py-16 text-center sm:px-6 lg:px-8 lg:py-24">
+      <h2 className="text-3xl font-bold tracking-tight text-slate-900 sm:text-4xl">
+        Siap memulai hari Anda?
+      </h2>
+      <div className="mt-8 flex justify-center">
+        <Link href="/register" className="rounded-lg bg-gradient-to-r from-blue-500 to-cyan-400 px-6 py-3 text-base font-semibold text-white shadow-sm transition hover:opacity-90">
+          Daftar Gratis
+        </Link>
+      </div>
+    </div>
+  </section>
+);
+
+// Minimalist Footer
+const Footer = () => (
+  <footer className="bg-white">
+    <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
+      <p className="text-center text-sm text-slate-500">
+        &copy; {new Date().getFullYear()} haiseven.
+      </p>
+    </div>
+  </footer>
+);
