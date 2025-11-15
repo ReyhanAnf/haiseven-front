@@ -1,6 +1,7 @@
 "use client";
 
 import { useAuth } from "@/app/hooks/useAuth";
+import { useAuthStore } from "@/app/store/auth";
 import { Map, Plus } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -18,6 +19,7 @@ interface ThoughtMapItem {
 
 export default function CanvasListPage() {
   const { token } = useAuth();
+  const { user, showLoginModal } = useAuthStore();
   const router = useRouter();
   const [maps, setMaps] = useState<ThoughtMapItem[]>([]);
   const [loading, setLoading] = useState(true);
@@ -25,15 +27,11 @@ export default function CanvasListPage() {
   const [newTitle, setNewTitle] = useState("");
 
   useEffect(() => {
-    if (!token) {
-      router.push("/login");
-      return;
-    }
     fetchMaps();
-  }, [token]);
+  }, [user, token]);
 
   const fetchMaps = async () => {
-    if (!token) return;
+    if (!user || !token) return; // Only load if logged in
     setLoading(true);
     try {
       const res = await fetch(`${API_BASE}/api/thought-maps`, {
@@ -50,7 +48,12 @@ export default function CanvasListPage() {
   };
 
   const createNewMap = async () => {
-    if (!token || !newTitle.trim()) return;
+    // Login-to-save pattern
+    if (!user || !token) {
+      showLoginModal("Login untuk membuat dan menyimpan Thought Canvas Anda!");
+      return;
+    }
+    if (!newTitle.trim()) return;
     setCreating(true);
     try {
       const res = await fetch(`${API_BASE}/api/thought-maps`, {
@@ -71,7 +74,7 @@ export default function CanvasListPage() {
     }
   };
 
-  if (!token) return null;
+  // No guard clause - page is public, show empty state for guests
 
   return (
     <div className="mx-auto max-w-5xl px-4 py-6 pb-20">

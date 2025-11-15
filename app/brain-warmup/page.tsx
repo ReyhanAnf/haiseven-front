@@ -1,7 +1,7 @@
 "use client";
 
-import { useRouter } from "next/navigation";
-import { useEffect, useMemo, useState } from "react";
+import { useAuthStore } from "@/app/store/auth";
+import { useEffect, useState } from "react";
 import { useAuth } from "../hooks/useAuth";
 
 const API_BASE = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8000";
@@ -36,7 +36,7 @@ function generateQuestion(includeAdvanced: boolean): Question {
 
 export default function BrainWarmupPage() {
   const { token } = useAuth();
-  const router = useRouter();
+  const { user, showLoginModal } = useAuthStore();
   const [state, setState] = useState<State>("idle");
   const [timeLeft, setTimeLeft] = useState(60);
   const [includeAdvanced, setIncludeAdvanced] = useState(true);
@@ -49,24 +49,7 @@ export default function BrainWarmupPage() {
   const [message, setMessage] = useState<string | null>(null);
   const [muted, setMuted] = useState(true);
 
-  // token fallback from persisted store
-  const persistedToken = useMemo(() => {
-    if (typeof window === "undefined") return null;
-    try {
-      const raw = localStorage.getItem("haiseven-auth");
-      if (!raw) return null;
-      const parsed = JSON.parse(raw);
-      return parsed?.state?.token ?? null;
-    } catch { return null; }
-  }, []);
-  const effectiveToken = token || persistedToken;
-
-  useEffect(() => {
-    if (!effectiveToken) {
-      const id = setTimeout(() => router.replace("/login"), 150);
-      return () => clearTimeout(id);
-    }
-  }, [effectiveToken, router]);
+  // No route protection - anyone can play the game
 
   // timer effect
   useEffect(() => {
@@ -157,7 +140,11 @@ export default function BrainWarmupPage() {
   };
 
   const saveScore = async () => {
-    if (!effectiveToken) return;
+    // Login-to-save pattern
+    if (!user || !token) {
+      showLoginModal("Login untuk menyimpan skor Brain Warmup Anda!");
+      return;
+    }
     setSaving(true);
     setMessage(null);
     try {
@@ -166,7 +153,7 @@ export default function BrainWarmupPage() {
         headers: {
           "Content-Type": "application/json",
           Accept: "application/json",
-          Authorization: `Bearer ${effectiveToken}`,
+          Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify({ score, game_type: "Math" }),
       });
@@ -179,9 +166,7 @@ export default function BrainWarmupPage() {
     }
   };
 
-  if (!effectiveToken) {
-    return <div className="mx-auto max-w-lg"><div className="card p-6"><p className="text-sm">Memeriksa sesi...</p></div></div>;
-  }
+  // No guard clause - anyone can play
 
   return (
     <div className="mx-auto max-w-3xl">

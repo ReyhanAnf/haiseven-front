@@ -81,41 +81,55 @@ const features = [
     name: 'Daily Focus',
     description: 'Tentukan 3 prioritas utamamu untuk hari ini.',
     icon: CheckCircle,
+    href: '/focus',
   },
   {
     name: 'Gratitude Jar',
     description: 'Catat hal-hal kecil yang kamu syukuri.',
     icon: HandHeart,
+    href: '/gratitude',
   },
   {
     name: 'Morning Page',
     description: 'Tuangkan isi kepala tanpa filter selama 3 menit.',
     icon: Wind,
+    href: '/morning-page',
   },
   {
     name: 'Positive Affirmation',
     description: 'Dapatkan kutipan positif acak untuk semangat.',
     icon: Sparkles,
+    href: '/affirmation',
   },
   {
-    name: 'Brain Warm-up',
+    name: 'Brain Warm-up (Math)',
     description: 'Latih kognitif dengan game matematika cepat.',
     icon: BrainCircuit,
+    href: '/brain-warmup',
+  },
+  {
+    name: 'Pattern Play',
+    description: 'Asah logika dengan game puzzle pengenalan pola.',
+    icon: BrainCircuit,
+    href: '/pattern-play',
   },
   {
     name: 'Mental Unload',
     description: 'Buang pikiran negatif yang akan lenyap selamanya.',
     icon: Trash2,
+    href: '/unload',
   },
   {
     name: 'Decision Maker',
     description: 'Bandingkan pro dan kontra untuk keputusan penting.',
     icon: GitBranch,
+    href: '/decision',
   },
   {
     name: 'Morning Muse',
     description: 'Dapatkan ide kreatif untuk memulai tulisan atau harimu.',
     icon: Edit,
+    href: '/muse',
   },
 ];
 
@@ -131,11 +145,15 @@ const FeaturesSection = () => (
     </div>
     <div className="mt-16 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
       {features.map((feature) => (
-        <div key={feature.name} className="rounded-xl border border-slate-200/70 bg-white p-6 shadow-sm transition hover:border-slate-300 hover:shadow-md">
-          <feature.icon className="h-8 w-8 text-blue-500" strokeWidth={1.5} />
-          <h3 className="mt-4 font-semibold text-slate-900">{feature.name}</h3>
+        <Link
+          key={feature.name}
+          href={feature.href}
+          className="rounded-xl border border-slate-200/70 bg-white p-6 shadow-sm transition hover:border-slate-300 hover:shadow-md group"
+        >
+          <feature.icon className="h-8 w-8 text-blue-500 group-hover:text-cyan-500 transition-colors" strokeWidth={1.5} />
+          <h3 className="mt-4 font-semibold text-slate-900 group-hover:text-blue-600 transition-colors">{feature.name}</h3>
           <p className="mt-1 text-sm text-slate-600">{feature.description}</p>
-        </div>
+        </Link>
       ))}
     </div>
   </section>

@@ -1,6 +1,9 @@
 "use client";
 
+import { Lock, Mail, Sparkles } from "lucide-react";
+import Link from "next/link";
 import { useState } from "react";
+import { GridBackground } from "../components/ui/grid-background";
 import { useAuth } from "../hooks/useAuth";
 
 export default function LoginPage() {
@@ -20,37 +23,70 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="mx-auto max-w-md">
-      <div className="card p-6">
-        <h1 className="mb-2">Login</h1>
-        <div className="h-1 w-16 bg-[var(--bau-blue)] mb-6" />
-        <form onSubmit={onSubmit} className="space-y-4">
-          <div>
-            <label className="block text-sm mb-1">Email</label>
-            <input
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              className="input"
-              required
-            />
+    <GridBackground className="min-h-screen flex items-center justify-center p-4">
+      <div className="mx-auto max-w-md w-full relative z-10">
+        <div className="text-center mb-8">
+          <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-gradient-to-br from-blue-500 to-cyan-400 mb-4 shadow-lg">
+            <Sparkles className="w-8 h-8 text-white" />
           </div>
-          <div>
-            <label className="block text-sm mb-1">Password</label>
-            <input
-              type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              className="input"
-              required
-            />
+          <h1 className="text-3xl font-bold mb-2">Welcome Back</h1>
+          <p className="text-slate-600">Masuk ke akun haiseven kamu</p>
+        </div>
+
+        <div className="card p-8 shadow-xl">
+          <form onSubmit={onSubmit} className="space-y-5">
+            <div>
+              <label className="block text-sm font-medium text-slate-700 mb-2 flex items-center gap-2">
+                <Mail className="w-4 h-4" />
+                Email
+              </label>
+              <input
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                className="input"
+                placeholder="nama@email.com"
+                required
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-slate-700 mb-2 flex items-center gap-2">
+                <Lock className="w-4 h-4" />
+                Password
+              </label>
+              <input
+                type="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                className="input"
+                placeholder="••••••••"
+                required
+              />
+            </div>
+            {error && (
+              <div className="p-3 bg-red-50 border border-red-200 rounded-lg">
+                <p className="text-red-700 text-sm">{error}</p>
+              </div>
+            )}
+            <button
+              type="submit"
+              className="btn btn-primary w-full"
+              disabled={isLoading}
+            >
+              {isLoading ? "Signing in…" : "Login"}
+            </button>
+          </form>
+
+          <div className="mt-6 text-center">
+            <p className="text-sm text-slate-600">
+              Belum punya akun?{" "}
+              <Link href="/register" className="text-blue-600 hover:text-blue-700 font-semibold">
+                Daftar sekarang
+              </Link>
+            </p>
           </div>
-          {error && <p className="text-[var(--bau-red)] text-sm">{error}</p>}
-          <button type="submit" className="btn btn-primary w-full" disabled={isLoading}>
-            {isLoading ? "Signing in…" : "Login"}
-          </button>
-        </form>
+        </div>
       </div>
-    </div>
+    </GridBackground>
   );
 }

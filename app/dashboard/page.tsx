@@ -3,18 +3,22 @@
 import {
     ArrowRight,
     Award,
+    BrainCircuit,
     Calendar,
     CheckCircle,
     Clock,
     GitBranch,
     HandHeart,
+    Lightbulb,
     Sparkles,
+    Square,
     TrendingUp,
     Wind
 } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
+import { CardSpotlight } from "../components/ui/card-spotlight";
 import { useAuth } from "../hooks/useAuth";
 
 const API_BASE = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8000";
@@ -201,12 +205,47 @@ export default function DashboardPage() {
 
           {/* Quick Actions */}
           <div className="card p-6">
-            <h3 className="font-bold mb-4">Quick Actions</h3>
-            <div className="space-y-2">
-              <QuickActionButton href="/focus" icon={<CheckCircle className="w-4 h-4" />} label="Daily Focus" />
-              <QuickActionButton href="/gratitude" icon={<HandHeart className="w-4 h-4" />} label="Gratitude Jar" />
-              <QuickActionButton href="/morning-page" icon={<Wind className="w-4 h-4" />} label="Morning Page" />
-              <QuickActionButton href="/canvas" icon={<GitBranch className="w-4 h-4" />} label="Thought Canvas" />
+            <h3 className="font-bold mb-4 flex items-center gap-2">
+              <Sparkles className="w-5 h-5 text-blue-500" />
+              Quick Actions
+            </h3>
+            <div className="space-y-4">
+              {/* Core Features */}
+              <div>
+                <p className="text-xs font-semibold text-slate-500 uppercase tracking-wide mb-2 px-3">Core</p>
+                <div className="space-y-1">
+                  <QuickActionButton href="/focus" icon={<CheckCircle className="w-4 h-4" />} label="Daily Focus" color="blue" />
+                  <QuickActionButton href="/gratitude" icon={<HandHeart className="w-4 h-4" />} label="Gratitude Jar" color="pink" />
+                  <QuickActionButton href="/morning-page" icon={<Wind className="w-4 h-4" />} label="Morning Page" color="violet" />
+                </div>
+              </div>
+
+              {/* Tools */}
+              <div>
+                <p className="text-xs font-semibold text-slate-500 uppercase tracking-wide mb-2 px-3">Tools</p>
+                <div className="space-y-1">
+                  <QuickActionButton href="/decision" icon={<GitBranch className="w-4 h-4" />} label="Decision Maker" color="purple" />
+                  <QuickActionButton href="/canvas" icon={<GitBranch className="w-4 h-4" />} label="Thought Canvas" color="emerald" />
+                </div>
+              </div>
+
+              {/* Games */}
+              <div>
+                <p className="text-xs font-semibold text-slate-500 uppercase tracking-wide mb-2 px-3">Brain Games</p>
+                <div className="space-y-1">
+                  <QuickActionButton href="/brain-warmup" icon={<BrainCircuit className="w-4 h-4" />} label="Math Warmup" color="amber" />
+                  <QuickActionButton href="/pattern-play" icon={<Square className="w-4 h-4" />} label="Pattern Play" color="indigo" />
+                </div>
+              </div>
+
+              {/* Inspiration */}
+              <div>
+                <p className="text-xs font-semibold text-slate-500 uppercase tracking-wide mb-2 px-3">Inspiration</p>
+                <div className="space-y-1">
+                  <QuickActionButton href="/affirmation" icon={<Sparkles className="w-4 h-4" />} label="Affirmation" color="rose" />
+                  <QuickActionButton href="/muse" icon={<Lightbulb className="w-4 h-4" />} label="Morning Muse" color="orange" />
+                </div>
+              </div>
             </div>
           </div>
 
@@ -249,8 +288,16 @@ function StatCard({
     emerald: 'from-emerald-500 to-teal-400',
   }[color];
 
+  const spotlightColor = {
+    blue: 'rgba(59, 130, 246, 0.4)',
+    pink: 'rgba(236, 72, 153, 0.4)',
+    violet: 'rgba(139, 92, 246, 0.4)',
+    amber: 'rgba(245, 158, 11, 0.4)',
+    emerald: 'rgba(16, 185, 129, 0.4)',
+  }[color];
+
   return (
-    <div className="card p-4 hover:shadow-lg transition-shadow">
+    <CardSpotlight className="p-4 hover:shadow-lg transition-shadow" radius={200} color={spotlightColor}>
       <div className={`w-10 h-10 rounded-lg bg-gradient-to-br ${colorClasses} flex items-center justify-center text-white mb-3`}>
         {icon}
       </div>
@@ -259,7 +306,7 @@ function StatCard({
       {streak !== undefined && streak > 0 && (
         <p className="text-xs text-blue-600 font-medium mt-2">🔥 {streak} hari berturut</p>
       )}
-    </div>
+    </CardSpotlight>
   );
 }
 
@@ -289,17 +336,39 @@ function ActivityItem({ activity }: { activity: Activity }) {
   );
 }
 
-function QuickActionButton({ href, icon, label }: { href: string; icon: React.ReactNode; label: string }) {
+function QuickActionButton({
+  href,
+  icon,
+  label,
+  color = "blue"
+}: {
+  href: string;
+  icon: React.ReactNode;
+  label: string;
+  color?: string;
+}) {
+  const colorClasses: Record<string, string> = {
+    blue: "text-blue-600 group-hover:bg-blue-50",
+    pink: "text-pink-600 group-hover:bg-pink-50",
+    violet: "text-violet-600 group-hover:bg-violet-50",
+    purple: "text-purple-600 group-hover:bg-purple-50",
+    emerald: "text-emerald-600 group-hover:bg-emerald-50",
+    amber: "text-amber-600 group-hover:bg-amber-50",
+    indigo: "text-indigo-600 group-hover:bg-indigo-50",
+    rose: "text-rose-600 group-hover:bg-rose-50",
+    orange: "text-orange-600 group-hover:bg-orange-50",
+  };
+
   return (
     <Link
       href={href}
-      className="flex items-center justify-between p-3 rounded-lg hover:bg-slate-50 transition-colors group"
+      className={`flex items-center justify-between p-3 rounded-lg transition-colors group ${colorClasses[color]}`}
     >
       <div className="flex items-center gap-3">
-        <div className="text-slate-600">{icon}</div>
+        <div className={colorClasses[color].split(" ")[0]}>{icon}</div>
         <span className="text-sm font-medium text-slate-700">{label}</span>
       </div>
-      <ArrowRight className="w-4 h-4 text-slate-400 group-hover:text-blue-500 group-hover:translate-x-1 transition-all" />
+      <ArrowRight className={`w-4 h-4 text-slate-400 ${colorClasses[color].split(" ")[0]} group-hover:translate-x-1 transition-all`} />
     </Link>
   );
 }

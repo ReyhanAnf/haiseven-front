@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Inter, Space_Grotesk } from "next/font/google";
 import { Header } from "./components/Header";
+import LoginModal from "./components/auth/LoginModal";
 import "./globals.css";
 
 const inter = Inter({
@@ -27,7 +28,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-  <body className={`${inter.variable} ${grotesk.variable} antialiased`}>
+      <body className={`${inter.variable} ${grotesk.variable} antialiased`}>
         <Header />
         <main className="mx-auto max-w-5xl px-4 py-6 sm:py-10">
           {children}
@@ -38,6 +39,7 @@ export default function RootLayout({
             <span className="text-gray-500">Web3 gradient minimalism</span>
           </div>
         </footer>
+        <LoginModal />
       </body>
     </html>
   );

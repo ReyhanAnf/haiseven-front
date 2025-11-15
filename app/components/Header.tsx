@@ -1,5 +1,19 @@
 "use client";
 
+import { motion } from "framer-motion";
+import {
+    GitBranch,
+    HandHeart,
+    LayoutDashboard,
+    LogOut,
+    Menu,
+    Palette,
+    Sparkles,
+    Target,
+    User,
+    Wind,
+    X
+} from "lucide-react";
 import Link from "next/link";
 import { useMemo, useState } from "react";
 import { useAuth } from "../hooks/useAuth";
@@ -24,34 +38,70 @@ export function Header() {
   const hasSession = !!(token || persistedToken);
 
   return (
-    <header className="sticky top-0 z-50 bg-white/80 backdrop-blur-sm">
+    <header className="sticky top-0 z-50 bg-white/90 backdrop-blur-md border-b border-slate-200/50 shadow-sm">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="flex h-16 items-center justify-between">
-          <div className="flex items-center">
-            <Link href={hasSession ? "/dashboard" : "/"} className="text-2xl font-bold tracking-tight text-slate-900">
+          {/* Logo */}
+          <Link
+            href={hasSession ? "/dashboard" : "/"}
+            className="flex items-center gap-2 group"
+          >
+            <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-blue-500 to-cyan-400 flex items-center justify-center shadow-sm group-hover:shadow-md transition-shadow">
+              <Sparkles className="w-5 h-5 text-white" />
+            </div>
+            <span className="text-2xl font-bold tracking-tight bg-gradient-to-r from-blue-600 to-cyan-500 bg-clip-text text-transparent">
               haiseven
-            </Link>
-          </div>
+            </span>
+          </Link>
 
           {/* Desktop Menu */}
-          <nav className="hidden sm:flex items-center gap-4">
+          <nav className="hidden md:flex items-center gap-1">
             {hasSession ? (
               <>
-                <Link className="nav-link" href="/focus">Focus</Link>
-                <Link className="nav-link" href="/morning-page">Morning Page</Link>
-                <Link className="nav-link" href="/gratitude">Gratitude</Link>
-                <Link className="nav-link" href="/decision">Decisions</Link>
-                <Link className="nav-link" href="/canvas">Canvas</Link>
-                <button onClick={() => logout()} className="rounded-lg px-4 py-2 text-sm font-semibold text-slate-700 ring-1 ring-inset ring-slate-300/70 transition hover:bg-slate-50">
+                <NavLink href="/dashboard" icon={<LayoutDashboard className="w-4 h-4" />}>
+                  Dashboard
+                </NavLink>
+                <NavLink href="/focus" icon={<Target className="w-4 h-4" />}>
+                  Focus
+                </NavLink>
+                <NavLink href="/morning-page" icon={<Wind className="w-4 h-4" />}>
+                  Morning
+                </NavLink>
+                <NavLink href="/gratitude" icon={<HandHeart className="w-4 h-4" />}>
+                  Gratitude
+                </NavLink>
+                <NavLink href="/decision" icon={<GitBranch className="w-4 h-4" />}>
+                  Decisions
+                </NavLink>
+                <NavLink href="/canvas" icon={<Palette className="w-4 h-4" />}>
+                  Canvas
+                </NavLink>
+                <div className="w-px h-6 bg-slate-200 mx-2"></div>
+                <NavLink href="/profile" icon={<User className="w-4 h-4" />}>
+                  Profile
+                </NavLink>
+                <motion.button
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                  onClick={() => logout()}
+                  className="flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-medium text-slate-700 hover:bg-red-50 hover:text-red-600 transition-colors ml-2"
+                >
+                  <LogOut className="w-4 h-4" />
                   Logout
-                </button>
+                </motion.button>
               </>
             ) : (
               <>
-                <Link href="/login" className="rounded-lg px-4 py-2 text-sm font-semibold text-slate-700 ring-1 ring-inset ring-slate-300/70 transition hover:bg-slate-50">
+                <Link
+                  href="/login"
+                  className="rounded-lg px-4 py-2 text-sm font-semibold text-slate-700 hover:bg-slate-100 transition-colors"
+                >
                   Login
                 </Link>
-                <Link href="/register" className="rounded-lg bg-gradient-to-r from-blue-500 to-cyan-400 px-4 py-2 text-sm font-semibold text-white shadow-sm transition hover:opacity-90">
+                <Link
+                  href="/register"
+                  className="rounded-lg bg-gradient-to-r from-blue-500 to-cyan-400 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:shadow-md transition-shadow"
+                >
                   Sign Up
                 </Link>
               </>
@@ -59,15 +109,14 @@ export function Header() {
           </nav>
 
           {/* Mobile Menu Button */}
-          <div className="sm:hidden">
-            <button
-              className="btn btn-ghost px-2"
-              aria-label="Toggle navigation"
-              onClick={() => setOpen(o => !o)}
-            >
-              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="4" x2="20" y1="12" y2="12"/><line x1="4" x2="20" y1="6" y2="6"/><line x1="4" x2="20" y1="18" y2="18"/></svg>
-            </button>
-          </div>
+          <motion.button
+            whileTap={{ scale: 0.95 }}
+            className="md:hidden p-2 rounded-lg hover:bg-slate-100 transition-colors"
+            aria-label="Toggle navigation"
+            onClick={() => setOpen(o => !o)}
+          >
+            {open ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+          </motion.button>
         </div>
       </div>
 
@@ -88,6 +137,7 @@ export function Header() {
                 <Link className="mobile-nav-link" href="/decision" onClick={() => setOpen(false)}>Decision Maker</Link>
                 <Link className="mobile-nav-link" href="/canvas" onClick={() => setOpen(false)}>Thought Canvas</Link>
                 <div className="border-t border-slate-200 my-2"></div>
+                <Link className="mobile-nav-link" href="/profile" onClick={() => setOpen(false)}>Profile</Link>
                 <button className="btn btn-secondary w-full" onClick={() => { logout(); setOpen(false); }}>Logout</button>
               </>
             ) : (
@@ -103,3 +153,23 @@ export function Header() {
   );
 }
 
+// NavLink Component
+function NavLink({
+  href,
+  icon,
+  children
+}: {
+  href: string;
+  icon: React.ReactNode;
+  children: React.ReactNode
+}) {
+  return (
+    <Link
+      href={href}
+      className="flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-medium text-slate-700 hover:bg-slate-100 hover:text-slate-900 transition-colors"
+    >
+      {icon}
+      <span>{children}</span>
+    </Link>
+  );
+}

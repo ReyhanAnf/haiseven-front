@@ -1,6 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
+import { TextGenerateEffect } from "../components/ui/text-generate-effect";
 
 const API_BASE = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8000";
 const GRID_COUNT = 8; // jumlah card dalam grid
@@ -73,7 +74,11 @@ export default function AffirmationPage() {
             {cards.map((c) => (
               <li key={c.id} className={`card gradient-card gradient-animated ${c.tone} p-5 sm:p-6 transition-transform hover:scale-[1.01]`}
                   style={{ willChange: 'transform' }}>
-                <p className="text-base sm:text-lg leading-relaxed">{c.text}</p>
+                <TextGenerateEffect
+                  words={c.text}
+                  className="text-base sm:text-lg leading-relaxed text-white"
+                  duration={0.3}
+                />
               </li>
             ))}
           </ul>

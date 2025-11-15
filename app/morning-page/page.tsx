@@ -1,8 +1,12 @@
 "use client";
 
-import { useRouter } from "next/navigation";
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { AnimatePresence, motion } from "framer-motion";
+import Link from "next/link";
+import { useCallback, useEffect, useRef, useState } from "react";
+import { GridBackground } from "../components/ui/grid-background";
+import { SparklesCore } from "../components/ui/sparkles";
 import { useAuth } from "../hooks/useAuth";
+import { useAuthStore } from "../store/auth";
 
 const API_BASE = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8000";
 const TOTAL_SECONDS = 180; // 3 minutes
@@ -10,7 +14,7 @@ const IDLE_BLUR_MS = 5000; // 5 seconds
 
 export default function MorningPage() {
   const { token } = useAuth();
-  const router = useRouter();
+  const { user, showLoginModal } = useAuthStore();
   const [content, setContent] = useState("");
   const [secondsLeft, setSecondsLeft] = useState(TOTAL_SECONDS);
   const [saving, setSaving] = useState(false);
@@ -21,28 +25,9 @@ export default function MorningPage() {
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
   const blurTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
-  const persistedToken = useMemo(() => {
-    if (typeof window === "undefined") return null;
-    try {
-      const raw = localStorage.getItem("haiseven-auth");
-      if (!raw) return null;
-      const parsed = JSON.parse(raw);
-      return parsed?.state?.token ?? null;
-    } catch { return null; }
-  }, []);
-
-  const effectiveToken = token || persistedToken;
-
+  // Countdown timer - always runs, regardless of login status
   useEffect(() => {
-    if (!effectiveToken) {
-      const id = setTimeout(() => router.replace("/login"), 150);
-      return () => clearTimeout(id);
-    }
-  }, [effectiveToken, router]);
-
-  // Countdown timer
-  useEffect(() => {
-    if (!effectiveToken || saved) return;
+    if (saved) return;
     intervalRef.current = setInterval(() => {
       setSecondsLeft((s) => {
         if (s <= 1) {
@@ -53,7 +38,7 @@ export default function MorningPage() {
       });
     }, 1000);
     return () => { if (intervalRef.current) clearInterval(intervalRef.current); };
-  }, [effectiveToken, saved]);
+  }, [saved]);
 
   // Auto-save when timer finishes
   useEffect(() => {
@@ -78,7 +63,12 @@ export default function MorningPage() {
   };
 
   const handleSave = async () => {
-    if (!effectiveToken || saving || saved) return;
+    // Login-to-save pattern
+    if (!user || !token) {
+      showLoginModal("Login untuk menyimpan Morning Page Anda dan lihat riwayat tulisan!");
+      return;
+    }
+    if (saving || saved) return;
     setSaving(true);
     setError(null);
     try {
@@ -87,7 +77,7 @@ export default function MorningPage() {
         headers: {
           "Content-Type": "application/json",
           Accept: "application/json",
-          Authorization: `Bearer ${effectiveToken}`,
+          Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify({ content }),
       });
@@ -112,22 +102,28 @@ export default function MorningPage() {
     return () => window.removeEventListener("beforeunload", onBeforeUnload);
   }, [saved, content]);
 
-  if (!effectiveToken) {
-    return <div className="mx-auto max-w-lg"><div className="card p-6"><p className="text-sm">Memeriksa sesi...</p></div></div>;
-  }
+  // No guard clause - page is public, everyone can try the timer
 
   const minutes = Math.floor(secondsLeft / 60);
   const secs = secondsLeft % 60;
 
   return (
-    <div className="min-h-[70vh] flex flex-col gap-4">
-      <div className="flex items-center justify-between">
-        <h1>Morning Page</h1>
-        <div className="text-sm font-mono px-3 py-1 rounded border border-[var(--border)] bg-white/70">
-          {minutes}:{secs.toString().padStart(2, "0")}
+    <GridBackground>
+      <div className="min-h-[70vh] flex flex-col gap-4 relative z-10">
+        <div className="flex items-center justify-between">
+          <h1>Morning Page</h1>
+          <div className="flex items-center gap-3">
+            {user && (
+              <Link href="/morning-page/history" className="text-sm text-cyan-600 hover:text-cyan-700 font-medium">
+                Lihat Archive →
+              </Link>
+            )}
+            <div className="text-sm font-mono px-3 py-1 rounded border border-[var(--border)] bg-white/70">
+              {minutes}:{secs.toString().padStart(2, "0")}
+            </div>
+          </div>
         </div>
-      </div>
-      <div className="deco-line" />
+        <div className="deco-line" />
       <div className="relative flex-1">
         <textarea
           className={`w-full h-full outline-none p-4 rounded-xl border border-[var(--border)] bg-white resize-none text-base leading-relaxed tracking-wide transition-all ${blurred ? 'blur-[5px]' : ''}`}
@@ -162,7 +158,30 @@ export default function MorningPage() {
           <button className="btn btn-secondary" onClick={() => { setSaved(false); setSecondsLeft(TOTAL_SECONDS); setContent(""); scheduleBlur(); }}>Mulai Lagi</button>
         </div>
       )}
-      <p className="text-xs opacity-60">Teks akan blur setelah {IDLE_BLUR_MS/1000} detik tanpa mengetik untuk mencegah editing.</p>
-    </div>
+        <p className="text-xs opacity-60">Teks akan blur setelah {IDLE_BLUR_MS/1000} detik tanpa mengetik untuk mencegah editing.</p>
+
+        <AnimatePresence>
+          {saved && (
+            <motion.div
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.9 }}
+              className="absolute inset-0 flex items-center justify-center z-20 pointer-events-none"
+            >
+              <div className="relative">
+                <SparklesCore
+                  background="transparent"
+                  minSize={0.6}
+                  maxSize={1.4}
+                  particleDensity={80}
+                  particleColor="#06b6d4"
+                  className="w-[400px] h-[400px]"
+                />
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </div>
+    </GridBackground>
   );
 }
